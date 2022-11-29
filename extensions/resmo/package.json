@@ -6,19 +6,20 @@
   "icon": "logo.svg",
   "author": "ozgunarslantas",
   "categories": [
-    "Data"
+    "Security",
+    "Other"
   ],
   "license": "MIT",
   "commands": [
     {
       "name": "allResources",
-      "title": "Resmo Resources",
+      "title": "Search Resource",
       "description": "List all resources with given search keys.",
       "mode": "view"
     },
     {
       "name": "query",
-      "title": "Resmo SQL Search",
+      "title": "Run SQL",
       "description": "Perform SQL queries with given search keys.",
       "mode": "view"
     }
