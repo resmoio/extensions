@@ -2,7 +2,7 @@ import { ActionPanel, Action, List } from "@raycast/api";
 import { useFetch } from "@raycast/utils";
 import { useState } from "react";
 import { getPreferenceValues } from "@raycast/api";
-import { MetaType } from "./query";
+import { integrationIconURL, MetaType } from "./query";
 
 interface ResourceRow extends MetaType {
   name: string;
@@ -17,8 +17,17 @@ interface Resources {
   }[];
 }
 
+interface MetadataIntegration {
+  description: string;
+  name: string;
+}
+interface Metadata {
+  integrations: Record<string, MetadataIntegration>;
+}
+
 export default function Command() {
   const [searchText, setSearchText] = useState("");
+  const [selectedIntegration, setSelectedIntegration] = useState<string>("");
   const tmpDomain = `${getPreferenceValues().resmoDomain}`;
   const resmoDomain = tmpDomain.endsWith("/") ? tmpDomain : tmpDomain + "/";
   const resmoApiKey = `${getPreferenceValues().resmoApiKey}`;
@@ -29,8 +38,26 @@ export default function Command() {
       Authorization: "Bearer " + resmoApiKey,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ freeText: searchText, integrations: [], riskScores: [], resourceTypes: [], fields: [] }),
+    body: JSON.stringify({
+      freeText: searchText,
+      integrations: selectedIntegration ? [selectedIntegration] : [],
+      riskScores: [],
+      resourceTypes: [],
+      fields: [],
+    }),
   });
+  const { data: metadata } = useFetch<Metadata>(resmoDomain + "api/metadata", {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + resmoApiKey,
+      "Content-Type": "application/json",
+    },
+  });
+
+  const integrations = metadata?.integrations;
+  const integrationsList = Object.values(metadata?.integrations || {}).sort((int1, int2) =>
+    int1.description.localeCompare(int2.description)
+  );
 
   return (
     <List
@@ -38,6 +65,25 @@ export default function Command() {
       onSearchTextChange={setSearchText}
       searchBarPlaceholder="Search within your resources..."
       throttle
+      searchBarAccessory={
+        metadata ? (
+          <List.Dropdown
+            tooltip="Select Integration"
+            value={selectedIntegration ? integrations?.[selectedIntegration].description : "Select Integration"}
+            onChange={setSelectedIntegration}
+          >
+            <List.Dropdown.Item title="All Integrations" value="" />
+            {integrationsList.map((integration) => (
+              <List.Dropdown.Item
+                key={integration.name}
+                title={integration.description}
+                value={integration.name}
+                icon={integrationIconURL(integration.name)}
+              />
+            ))}
+          </List.Dropdown>
+        ) : null
+      }
     >
       <List.Section title="Results" subtitle={String(data?.rows?.length)}>
         {data?.rows?.map((row, index) => (
@@ -57,7 +103,7 @@ function ResourcesListItem({ resource, resmoDomain }: { resource: ResourceRow; r
     <List.Item
       title={resource.name}
       subtitle={resource.referencedType}
-      icon={"https://static.resmo.com/integrations/icons/" + resource._meta.integration.type + ".svg"}
+      icon={integrationIconURL(resource._meta.integration.type)}
       actions={
         <ActionPanel>
           <ActionPanel.Section>

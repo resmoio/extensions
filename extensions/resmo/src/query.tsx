@@ -4,6 +4,8 @@ import { useState } from "react";
 import { getPreferenceValues } from "@raycast/api";
 import { debounce } from "lodash";
 
+export const integrationIconURL = (integrationId: string) =>
+  `https://static.resmo.com/integrations/icons/${integrationId}.svg`;
 export interface MetaType {
   _meta: {
     type: string;
@@ -62,7 +64,6 @@ export default function Command() {
   });
 
   const resultsCanBeListed = data?.resultType === "TABLE";
-
   const results = !resultsCanBeListed ? [] : data.results.filter((result) => result._meta);
 
   return (
@@ -100,9 +101,10 @@ function NoResultListItem({ resmoDomain }: { resmoDomain: string }) {
 
 function QueryListItem({ result, resmoDomain }: { result: Result; resmoDomain: string }) {
   if (!result._meta) return null;
+
   return (
     <List.Item
-      icon={"https://static.resmo.com/integrations/icons/" + result._meta.integration.type + ".svg"}
+      icon={integrationIconURL(result._meta.integration.type)}
       title={result._meta.name || result._meta?.id + " | " + result._meta?.recordId}
       actions={
         <ActionPanel>
