@@ -70,7 +70,6 @@ export default function Command() {
       isLoading={isLoading}
       onSearchTextChange={debounce(setSearchText, 300)}
       searchBarPlaceholder="SELECT * FROM user"
-      throttle
     >
       <List.Section title="Results" subtitle={String(results.length)}>
         {results.map((result) => (
