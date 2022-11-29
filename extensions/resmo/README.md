@@ -22,3 +22,5 @@ Discover Resmo resources
 ![resmo sql](./metadata/resmo-metadata1.png)
 
 ![resmo aws resources](./metadata/resmo-metadata2.png)
+
+![resmo all resources](./metadata/resmo-metadata3.png)
