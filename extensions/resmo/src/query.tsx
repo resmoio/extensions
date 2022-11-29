@@ -47,9 +47,9 @@ export type SearchResponse = {
 
 export default function Command() {
   const [searchText, setSearchText] = useState("");
-  const tmpDomain = `${getPreferenceValues().resmoDomain}`;
+  const tmpDomain = `${getPreferenceValues().resmoDomain.trim()}`;
   const resmoDomain = tmpDomain.endsWith("/") ? tmpDomain : tmpDomain + "/";
-  const resmoApiKey = `${getPreferenceValues().resmoApiKey}`;
+  const resmoApiKey = `${getPreferenceValues().resmoApiKey.trim()}`;
 
   const { data, isLoading } = useFetch<SearchResponse>(resmoDomain + "api/query", {
     method: "POST",
