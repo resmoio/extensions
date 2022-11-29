@@ -13,7 +13,7 @@
   "commands": [
     {
       "name": "allResources",
-      "title": "Search Resource",
+      "title": "Search Resources",
       "description": "List all resources with given search keys.",
       "mode": "view"
     },
@@ -35,7 +35,7 @@
     {
       "type": "textfield",
       "name": "resmoDomain",
-      "title": "Domain",
+      "title": "Domain URL",
       "description": "The customer domain of your account, e.g. https://mydomain.resmo.app",
       "required": true
     }
