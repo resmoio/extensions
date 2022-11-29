@@ -1,6 +1,6 @@
-# Resmo
+# Resmo for Raycast
 
-Discover Resmo resources
+Make SQL queries, or list your resources and go to your Resmo UI from Raycast
 
 ## Features
 
@@ -18,6 +18,8 @@ Discover Resmo resources
 - Add those two information when asked, and you will be good to go.
 
 ## Resmo in action
+
+![resmo setup](./metadata/resmo-metadata0.png)
 
 ![resmo sql](./metadata/resmo-metadata1.png)
 
