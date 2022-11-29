@@ -2,8 +2,8 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "resmo",
   "title": "Resmo",
-  "description": "Resmo Raycast Extension - Make SQL queries and search all your resources",
-  "icon": "logo.svg",
+  "description": "Make SQL queries and search all your resources",
+  "icon": "logo.png",
   "author": "ozgunarslantas",
   "categories": [
     "Security",
