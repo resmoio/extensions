@@ -2,6 +2,7 @@ import { ActionPanel, Action, List } from "@raycast/api";
 import { useFetch } from "@raycast/utils";
 import { useState } from "react";
 import { getPreferenceValues } from "@raycast/api";
+import { debounce } from "lodash";
 
 export interface MetaType {
   _meta: {
@@ -60,14 +61,17 @@ export default function Command() {
     }),
   });
 
-  // SELECT * FROM github_deployment_env
-
   const resultsCanBeListed = data?.resultType === "TABLE";
 
   const results = !resultsCanBeListed ? [] : data.results.filter((result) => result._meta);
 
   return (
-    <List isLoading={isLoading} onSearchTextChange={setSearchText} searchBarPlaceholder="SELECT * FROM user" throttle>
+    <List
+      isLoading={isLoading}
+      onSearchTextChange={debounce(setSearchText, 300)}
+      searchBarPlaceholder="SELECT * FROM user"
+      throttle
+    >
       <List.Section title="Results" subtitle={String(results.length)}>
         {results.map((result) => (
           <QueryListItem
