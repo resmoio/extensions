@@ -61,6 +61,7 @@ export default function Command() {
       sql: searchText,
       resourceGroupId: "",
     }),
+    execute: Boolean(searchText),
   });
 
   const resultsCanBeListed = data?.resultType === "TABLE";
