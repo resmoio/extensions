@@ -89,7 +89,7 @@ export default function Command() {
 function NoResultListItem({ resmoDomain }: { resmoDomain: string }) {
   return (
     <List.Item
-      title="Go to Resmo UI"
+      title="Continue from Resmo UI"
       actions={
         <ActionPanel>
           <Action.OpenInBrowser title="Open in Browser" url={resmoDomain + "explore/search"} />
