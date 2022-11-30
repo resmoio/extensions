@@ -1,36 +1,16 @@
 import { ActionPanel, Action, List } from "@raycast/api";
 import { useFetch } from "@raycast/utils";
-import { useState } from "react";
-import { getPreferenceValues } from "@raycast/api";
-import { integrationIconURL, MetaType } from "./query";
-
-interface ResourceRow extends MetaType {
-  name: string;
-  referencedType: string;
-}
-interface Resources {
-  rows: ResourceRow[];
-  fields: {
-    name: string;
-    type: string;
-    isImportant: boolean;
-  }[];
-}
-
-interface MetadataIntegration {
-  description: string;
-  name: string;
-}
-interface Metadata {
-  integrations: Record<string, MetadataIntegration>;
-}
+import React, { useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { getApiKey, getDomain, integrationIconURL } from "./utils";
+import type { Metadata, Resource, Resources, ResourceRow } from "./utils";
 
 export default function Command() {
   const [searchText, setSearchText] = useState("");
   const [selectedIntegration, setSelectedIntegration] = useState<string>("");
-  const tmpDomain = `${getPreferenceValues().resmoDomain.trim()}`;
-  const resmoDomain = tmpDomain.endsWith("/") ? tmpDomain : tmpDomain + "/";
-  const resmoApiKey = `${getPreferenceValues().resmoApiKey.trim()}`;
+  const [showDetail, setShowDetail] = useState(false);
+  const resmoDomain = getDomain();
+  const resmoApiKey = getApiKey();
 
   const { data, isLoading } = useFetch<Resources>(resmoDomain + "api/explore/all/resources", {
     method: "POST",
@@ -65,6 +45,7 @@ export default function Command() {
       onSearchTextChange={setSearchText}
       searchBarPlaceholder="Search within your resources..."
       throttle
+      isShowingDetail={showDetail}
       searchBarAccessory={
         metadata ? (
           <List.Dropdown
@@ -91,6 +72,8 @@ export default function Command() {
             key={row.name + "-" + row.referencedType + "-" + index}
             resource={row}
             resmoDomain={resmoDomain}
+            showDetail={showDetail}
+            setShowDetail={setShowDetail}
           />
         ))}
       </List.Section>
@@ -98,21 +81,78 @@ export default function Command() {
   );
 }
 
-function ResourcesListItem({ resource, resmoDomain }: { resource: ResourceRow; resmoDomain: string }) {
+function ResourcesListItem({
+  resource,
+  resmoDomain,
+  showDetail,
+  setShowDetail,
+}: {
+  resource: ResourceRow;
+  resmoDomain: string;
+  showDetail: boolean;
+  setShowDetail: Dispatch<SetStateAction<boolean>>;
+}) {
   return (
     <List.Item
       title={resource.name}
       subtitle={resource.referencedType}
       icon={integrationIconURL(resource._meta.integration.type)}
+      detail={<ResourceDetail resource={resource} />}
       actions={
         <ActionPanel>
-          <ActionPanel.Section>
-            <Action.OpenInBrowser
-              title="Open in Browser"
-              url={resmoDomain + "explore/resources/" + resource._meta.type + "/" + resource._meta.recordId}
-            />
-          </ActionPanel.Section>
+          <Action
+            onAction={() => setShowDetail((current) => !current)}
+            title={showDetail ? "Hide detail" : "Show detail"}
+          />
+          <Action.OpenInBrowser
+            title="Open in Browser"
+            url={resmoDomain + "explore/resources/" + resource._meta.type + "/" + resource._meta.recordId}
+          />
         </ActionPanel>
+      }
+    />
+  );
+}
+
+export function ResourceDetail({ resource }: { resource: ResourceRow }) {
+  const resmoDomain = getDomain();
+  const resmoApiKey = getApiKey();
+
+  const { data, isLoading } = useFetch<Resource>(resmoDomain + `api/explore/resource/${resource._meta.recordId}`, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + resmoApiKey,
+      "Content-Type": "application/json",
+    },
+  });
+
+  const importantFields = data?.fields.filter(
+    (field) => field.isImportant && ["String", "Int", "Double", "Boolean", "Number"].includes(field.type)
+  );
+
+  return (
+    <List.Item.Detail
+      metadata={
+        <List.Item.Detail.Metadata>
+          {data && (
+            <>
+              <List.Item.Detail.Metadata.Link
+                title="Show on Resmo"
+                text="Resmo"
+                target={resmoDomain + "explore/resources/" + resource._meta.type + "/" + resource._meta.recordId}
+              />
+              {data.resourceLink && (
+                <List.Item.Detail.Metadata.Link title="Show on Console" text="Console" target={data.resourceLink} />
+              )}
+              <List.Item.Detail.Metadata.Separator />
+              {importantFields?.map(({ name }) => {
+                const value = data?.row[name];
+                return <List.Item.Detail.Metadata.Label key={name} title={name} text={String(value)} />;
+              })}
+            </>
+          )}
+          {isLoading && !data && <List.Item.Detail.Metadata.Label title="Loading..." />}
+        </List.Item.Detail.Metadata>
       }
     />
   );
