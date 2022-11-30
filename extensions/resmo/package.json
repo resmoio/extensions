@@ -16,12 +16,6 @@
       "title": "Search Resources",
       "description": "List all resources with given search keys.",
       "mode": "view"
-    },
-    {
-      "name": "query",
-      "title": "Run SQL",
-      "description": "Perform SQL queries with given search keys.",
-      "mode": "view"
     }
   ],
   "preferences": [
