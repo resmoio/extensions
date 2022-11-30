@@ -43,7 +43,7 @@ export default function Command() {
     <List
       isLoading={isLoading}
       onSearchTextChange={setSearchText}
-      searchBarPlaceholder="Search within your resources..."
+      searchBarPlaceholder="Search your resources..."
       throttle
       isShowingDetail={showDetail}
       searchBarAccessory={
