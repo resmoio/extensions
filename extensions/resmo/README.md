@@ -1,11 +1,10 @@
 # Resmo for Raycast
 
-Make SQL queries, or list your resources and go to your Resmo UI from Raycast
+List your resources, see their details and go to your Resmo UI from Raycast
 
 ## Features
 
-- Search resources
-- Run SQL queries
+- Search resources in your Resmo account
 
 ## Setup
 
@@ -16,13 +15,3 @@ Make SQL queries, or list your resources and go to your Resmo UI from Raycast
   - Domain name can be found Settings -> Profile -> Profile Information page. For example, if your domain name is `my-domain`, your domain url will be `https://my-domain.resmo.app`
 
 - Add those two information when asked, and you will be good to go.
-
-## Resmo in action
-
-![resmo setup](./metadata/resmo-metadata0.png)
-
-![resmo sql](./metadata/resmo-metadata1.png)
-
-![resmo aws resources](./metadata/resmo-metadata2.png)
-
-![resmo all resources](./metadata/resmo-metadata3.png)
