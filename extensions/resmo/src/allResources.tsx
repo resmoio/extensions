@@ -95,9 +95,9 @@ function ResourcesListItem({
   const riskScore = resource._meta.riskScore;
   const icon = {
     0: { source: Icon.Circle, tintColor: "gray" },
-    1: { source: Icon.CircleProgress25, tintColor: "#fde047" },
-    2: { source: Icon.CircleProgress50, tintColor: "#facc15" },
-    3: { source: Icon.CircleProgress75, tintColor: "#fb923c" },
+    1: { source: Icon.CircleProgress100, tintColor: "#fde047" },
+    2: { source: Icon.CircleProgress100, tintColor: "#facc15" },
+    3: { source: Icon.CircleProgress100, tintColor: "#fb923c" },
     4: { source: Icon.CircleProgress100, tintColor: "#ef4444" },
   }[riskScore];
   return (
